@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admini/
 
-Sitemap: https://btk.onrender.com/sitemap.xml
+Sitemap: https://btk-2m8c.onrender.com/sitemap.xml
