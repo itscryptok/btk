@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — BTK Synergyworks LLC</title>
+  <meta name="description" content="BTK Synergyworks site admin: review form submissions.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+  <style>
+    :root {
+      --navy: #0a1e3c; --royal: #1d4ed8; --royal-2: #2563eb; --sky: #7dd3fc;
+      --ink: #12263f; --muted: #52657d; --page: #f1f5f9; --line: #dbe4ef;
+      --danger: #b91c1c; --ok: #15803d;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif; color: var(--ink); background: var(--page); line-height: 1.6; }
+    .wrap { width: min(1060px, 94%); margin: 0 auto; padding: 2.5rem 0 3rem; }
+    header.admin-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    header.admin-head img { height: 54px; width: auto; }
+    h1 { font-size: 1.5rem; color: var(--navy); margin: 0; }
+    .sub { color: var(--muted); margin: 0.15rem 0 0; }
+    a { color: var(--royal); }
+    .card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 1.6rem; box-shadow: 0 10px 30px rgba(10,30,60,.08); }
+    .notice { background: #fef3c7; border: 1px solid #f59e0b; border-left: 5px solid #f59e0b; border-radius: 10px; padding: 1rem 1.2rem; }
+    .notice strong { color: #92400e; }
+    label { display: block; font-weight: 700; margin-bottom: 0.35rem; color: var(--navy); }
+    input[type="password"], input[type="search"], select {
+      width: 100%; padding: 0.7rem 0.9rem; border: 1.5px solid #c3d2e4; border-radius: 9px; font: inherit; background: #fff;
+    }
+    input:focus, select:focus { outline: none; border-color: var(--royal); box-shadow: 0 0 0 3px rgba(29,78,216,.18); }
+    .btn { display: inline-block; padding: 0.7rem 1.4rem; border-radius: 999px; font-weight: 700; font-size: 0.95rem; border: 2px solid transparent; cursor: pointer; background: var(--royal); color: #fff; text-decoration: none; }
+    .btn:hover { background: var(--royal-2); }
+    .btn-ghost { background: #fff; color: var(--royal); border-color: var(--royal); }
+    .btn-danger { background: #fff; color: var(--danger); border-color: var(--danger); padding: 0.35rem 0.8rem; font-size: 0.85rem; }
+    .btn-small { padding: 0.35rem 0.8rem; font-size: 0.85rem; }
+    .error { color: var(--danger); font-weight: 600; margin: 0.6rem 0 0; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: end; margin: 1.2rem 0; }
+    .toolbar .grow { flex: 1; min-width: 200px; }
+    .toolbar label { font-size: 0.85rem; }
+    .hint { font-size: 0.9rem; color: var(--muted); }
+    .count { font-weight: 700; color: var(--navy); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    th, td { text-align: left; padding: 0.65rem 0.6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--navy); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    tr:hover td { background: #f8fafc; }
+    .badge { display: inline-block; padding: 0.1rem 0.6rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; }
+    .badge-new { background: #dbeafe; color: #1e40af; }
+    .badge-contacted { background: #dcfce7; color: #166534; }
+    .details-cell { max-width: 260px; overflow-wrap: anywhere; }
+    .details-full { white-space: pre-wrap; background: var(--page); border-radius: 8px; padding: 0.7rem 0.9rem; margin-top: 0.4rem; }
+    .row-actions { white-space: nowrap; }
+    .row-actions .btn { margin: 0 0.15rem 0.25rem 0; }
+    .empty { text-align: center; color: var(--muted); padding: 2rem 0; }
+    .logout-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; }
+    @media (max-width: 760px) {
+      .details-cell { max-width: none; }
+      table, thead, tbody, th, td, tr { display: block; }
+      thead { display: none; }
+      tr { border-bottom: 2px solid var(--line); padding: 0.4rem 0; }
+      td { border-bottom: none; padding: 0.35rem 0.6rem; }
+      td::before { content: attr(data-label); display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="admin-head">
+      <img src="/assets/btk-logo-header.png" alt="BTK Synergyworks">
+      <div>
+        <h1>Site Admin</h1>
+        <p class="sub">BTK Synergyworks LLC — form submissions</p>
+      </div>
+    </header>
+
+    <!-- Shown only while no admin password has been set -->
+    <div class="card" id="not-set-box" hidden>
+      <div class="notice">
+        <strong>Admin password not set yet.</strong>
+        <p style="margin:.4rem 0 0">Ask the site owner to set the admin password before anyone can sign in here. There is no default password, and this panel stays locked until one is set.</p>
+      </div>
+      <p class="hint" style="margin-top:1rem"><a href="/">&larr; Back to the website</a></p>
+    </div>
+
+    <!-- Login -->
+    <div class="card" id="login-box" hidden>
+      <form id="login-form">
+        <label for="admin-password">Admin password</label>
+        <input type="password" id="admin-password" autocomplete="current-password" required>
+        <p class="error" id="login-error" hidden>Incorrect password. Please try again.</p>
+        <p style="margin-top:1rem"><button class="btn" type="submit">Sign in</button></p>
+      </form>
+      <p class="hint"><a href="/">&larr; Back to the website</a></p>
+    </div>
+
+    <!-- Submissions -->
+    <div id="panel" hidden>
+      <div class="logout-row">
+        <p class="hint" style="margin:0">Submissions are stored in <strong>this browser only</strong> until server-side functionality is activated for this app. Submissions made on another device or browser will not appear here yet.</p>
+        <button class="btn btn-ghost btn-small" type="button" id="logout-btn">Sign out</button>
+      </div>
+
+      <div class="toolbar">
+        <div class="grow">
+          <label for="search-box">Search submissions</label>
+          <input type="search" id="search-box" placeholder="Name, email, company, service, or details...">
+        </div>
+        <div>
+          <label for="status-filter">Status</label>
+          <select id="status-filter">
+            <option value="all">All</option>
+            <option value="new">New</option>
+            <option value="contacted">Contacted</option>
+          </select>
+        </div>
+        <div>
+          <button class="btn btn-ghost" type="button" id="export-btn">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0.4rem 1rem; overflow-x:auto">
+        <p><span class="count" id="result-count">0 submissions</span></p>
+        <table id="subs-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Name</th>
+              <th>Company</th>
+              <th>Email</th>
+              <th>Request type</th>
+              <th>Service</th>
+              <th>Details</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="subs-body"></tbody>
+        </table>
+        <p class="empty" id="empty-state" hidden>No submissions yet. New contact and quote requests will appear here.</p>
+      </div>
+      <p class="hint" style="margin-top:1rem"><a href="/">&larr; Back to the website</a></p>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    "use strict";
+
+    /* ============================================================
+       ADMIN PASSWORD — set this to the SHA-256 hex hash of the
+       chosen password once Yemi provides it. While it is empty,
+       the panel stays locked with a "not set yet" notice.
+       Never store or compare a plaintext password here.
+       ============================================================ */
+    var ADMIN_PASSWORD_HASH = "";
+
+    var STORAGE_KEY = "btk_submissions";
+    var SESSION_KEY = "btk_admin_session";
+
+    var notSetBox = document.getElementById("not-set-box");
+    var loginBox = document.getElementById("login-box");
+    var loginForm = document.getElementById("login-form");
+    var loginError = document.getElementById("login-error");
+    var panel = document.getElementById("panel");
+    var subsBody = document.getElementById("subs-body");
+    var emptyState = document.getElementById("empty-state");
+    var resultCount = document.getElementById("result-count");
+    var searchBox = document.getElementById("search-box");
+    var statusFilter = document.getElementById("status-filter");
+
+    function sha256Hex(text) {
+      var data = new TextEncoder().encode(text);
+      return window.crypto.subtle.digest("SHA-256", data).then(function (buf) {
+        return Array.prototype.map.call(new Uint8Array(buf), function (b) {
+          return ("0" + b.toString(16)).slice(-2);
+        }).join("");
+      });
+    }
+
+    function loadSubmissions() {
+      try {
+        var list = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "[]");
+        return Array.isArray(list) ? list : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveSubmissions(list) {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    function escapeHtml(s) {
+      return String(s == null ? "" : s)
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+
+    function fmtDate(iso) {
+      try { return new Date(iso).toLocaleString(); } catch (e) { return iso || ""; }
+    }
+
+    function render() {
+      var list = loadSubmissions();
+      var q = (searchBox.value || "").toLowerCase();
+      var status = statusFilter.value;
+      var shown = list.filter(function (s) {
+        if (status !== "all" && s.status !== status) return false;
+        if (!q) return true;
+        return [s.name, s.company, s.email, s.requestType, s.service, s.details]
+          .join(" ").toLowerCase().indexOf(q) !== -1;
+      });
+      resultCount.textContent = shown.length + (shown.length === 1 ? " submission" : " submissions") +
+        " (" + list.length + " total)";
+      subsBody.innerHTML = "";
+      emptyState.hidden = shown.length !== 0;
+      shown.forEach(function (s) {
+        var tr = document.createElement("tr");
+
+        function cell(label, html) {
+          var td = document.createElement("td");
+          td.setAttribute("data-label", label);
+          td.innerHTML = html;
+          return td;
+        }
+        tr.appendChild(cell("Date", escapeHtml(fmtDate(s.date))));
+        tr.appendChild(cell("Name", escapeHtml(s.name)));
+        tr.appendChild(cell("Company", escapeHtml(s.company || "—")));
+        tr.appendChild(cell("Email", '<a href="mailto:' + escapeHtml(s.email) + '">' + escapeHtml(s.email) + "</a>"));
+        tr.appendChild(cell("Request type", escapeHtml(s.requestType)));
+        tr.appendChild(cell("Service", escapeHtml(s.service)));
+
+        var detailsTd = document.createElement("td");
+        detailsTd.setAttribute("data-label", "Details");
+        detailsTd.className = "details-cell";
+        var short = document.createElement("span");
+        short.textContent = (s.details || "").length > 90 ? s.details.slice(0, 90) + "…" : (s.details || "");
+        detailsTd.appendChild(short);
+        if ((s.details || "").length > 90) {
+          var toggle = document.createElement("button");
+          toggle.type = "button";
+          toggle.className = "btn btn-ghost btn-small";
+          toggle.textContent = "Show full details";
+          toggle.style.marginLeft = "0.4rem";
+          var full = document.createElement("div");
+          full.className = "details-full";
+          full.textContent = s.details;
+          full.hidden = true;
+          toggle.addEventListener("click", function () {
+            full.hidden = !full.hidden;
+            toggle.textContent = full.hidden ? "Show full details" : "Hide details";
+          });
+          detailsTd.appendChild(toggle);
+          detailsTd.appendChild(full);
+        }
+        tr.appendChild(detailsTd);
+
+        var badge = document.createElement("span");
+        badge.className = "badge " + (s.status === "contacted" ? "badge-contacted" : "badge-new");
+        badge.textContent = s.status === "contacted" ? "Contacted" : "New";
+        var statusTd = document.createElement("td");
+        statusTd.setAttribute("data-label", "Status");
+        statusTd.appendChild(badge);
+        tr.appendChild(statusTd);
+
+        var actTd = document.createElement("td");
+        actTd.setAttribute("data-label", "Actions");
+        actTd.className = "row-actions";
+        var markBtn = document.createElement("button");
+        markBtn.type = "button";
+        markBtn.className = "btn btn-small";
+        markBtn.textContent = s.status === "contacted" ? "Mark as New" : "Mark as Contacted";
+        markBtn.addEventListener("click", function () {
+          var all = loadSubmissions();
+          var item = all.find(function (x) { return x.id === s.id; });
+          if (item) {
+            item.status = item.status === "contacted" ? "new" : "contacted";
+            saveSubmissions(all);
+            render();
+          }
+        });
+        var delBtn = document.createElement("button");
+        delBtn.type = "button";
+        delBtn.className = "btn btn-danger";
+        delBtn.textContent = "Delete";
+        delBtn.addEventListener("click", function () {
+          if (window.confirm("Delete this submission? This cannot be undone.")) {
+            saveSubmissions(loadSubmissions().filter(function (x) { return x.id !== s.id; }));
+            render();
+          }
+        });
+        actTd.appendChild(markBtn);
+        actTd.appendChild(delBtn);
+        tr.appendChild(actTd);
+
+        subsBody.appendChild(tr);
+      });
+    }
+
+    function exportCsv() {
+      var list = loadSubmissions();
+      var header = ["Date", "Name", "Company", "Email", "Request type", "Service", "Details", "Status"];
+      function csvCell(v) {
+        return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
+      }
+      var lines = [header.map(csvCell).join(",")];
+      list.forEach(function (s) {
+        lines.push([fmtDate(s.date), s.name, s.company || "", s.email, s.requestType, s.service, s.details, s.status].map(csvCell).join(","));
+      });
+      var blob = new Blob([lines.join("\r\n")], { type: "text/csv" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "btk-submissions.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    function showPanel() {
+      loginBox.hidden = true;
+      notSetBox.hidden = true;
+      panel.hidden = false;
+      render();
+    }
+
+    document.getElementById("export-btn").addEventListener("click", exportCsv);
+    searchBox.addEventListener("input", render);
+    statusFilter.addEventListener("change", render);
+    document.getElementById("logout-btn").addEventListener("click", function () {
+      try { window.sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+      panel.hidden = true;
+      loginBox.hidden = false;
+      document.getElementById("admin-password").value = "";
+      document.getElementById("admin-password").focus();
+    });
+
+    loginForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var pw = document.getElementById("admin-password").value;
+      if (!ADMIN_PASSWORD_HASH) {
+        loginError.hidden = false;
+        loginError.textContent = "Admin password is not set yet. Ask the site owner to set it.";
+        return;
+      }
+      sha256Hex(pw).then(function (hash) {
+        if (hash === ADMIN_PASSWORD_HASH.toLowerCase()) {
+          try { window.sessionStorage.setItem(SESSION_KEY, "1"); } catch (err) {}
+          loginError.hidden = true;
+          showPanel();
+        } else {
+          loginError.hidden = false;
+          loginError.textContent = "Incorrect password. Please try again.";
+          document.getElementById("admin-password").select();
+        }
+      }).catch(function () {
+        loginError.hidden = false;
+        loginError.textContent = "Your browser could not check the password. Please try a modern browser.";
+      });
+    });
+
+    // Boot: locked until a password hash is set.
+    if (!ADMIN_PASSWORD_HASH) {
+      notSetBox.hidden = false;
+    } else if (window.sessionStorage.getItem(SESSION_KEY) === "1") {
+      showPanel();
+    } else {
+      loginBox.hidden = false;
+    }
+  })();
+  </script>
+</body>
+</html>

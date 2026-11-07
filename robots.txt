@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admini/
+
+Sitemap: https://btk.onrender.com/sitemap.xml
