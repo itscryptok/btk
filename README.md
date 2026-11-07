@@ -3,7 +3,7 @@
 Static website for **BTK Synergyworks LLC** — network infrastructure installation
 and IT support, serving Dallas–Fort Worth and surrounding areas.
 
-Live: https://btk.onrender.com/
+Live: https://btk-2m8c.onrender.com/
 
 ## What this is
 
