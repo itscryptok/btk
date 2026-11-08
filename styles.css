@@ -410,6 +410,14 @@ body.no-scroll { overflow: hidden; }
   padding: 0.7rem 0.9rem; border-radius: 6px;
   font-size: 0.95rem; color: var(--navy) !important;
 }
+.blog-cta {
+  margin-top: 1.4rem; padding: 1.1rem 1.2rem;
+  background: var(--sky-soft); border-left: 4px solid var(--royal);
+  border-radius: 6px;
+}
+.blog-cta p { color: var(--navy) !important; margin-bottom: 0.6rem; }
+.blog-cta p:last-child { margin-bottom: 0; }
+.blog-cta-links a { color: var(--royal); font-weight: 700; }
 
 /* Responsive */
 @media (max-width: 960px) {
