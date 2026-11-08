@@ -268,6 +268,20 @@
       }
     };
 
+    /* Topic-specific tie-ins for the not-yet-written articles, so
+       their closing blocks name the actual topic (not a generic
+       line) — the service link already follows the card's tag. */
+    var CTA_BY_SLUG = {
+      "network-closet-cleanup": "A tangled closet slows every fix and hides real problems. Our technicians clean up, label, and document network closets so the next visit is a ten-minute job, not a treasure hunt.",
+      "wifi-dead-zones": "Wi-Fi dead zones are usually a placement problem, not a router problem. We walk the site, find where the signal actually goes, and put access points where they work.",
+      "cat6-vs-cat6a-vs-cat8": "Picking the wrong cable category is a cost you pay twice \u2014 once to install it, once to replace it. We spec the right cable for how long you will stay in the space.",
+      "power-over-ethernet": "PoE puts power and data on one cable, but the power budget and the switch behind it decide whether it works. We size both before anything gets plugged in.",
+      "office-moves-without-downtime": "Moves go wrong when the network is an afterthought. We plan the move weeks out so every desk is live on day one.",
+      "label-every-cable-run": "Labels and test reports turn the next visit from a treasure hunt into a ten-minute fix. We label and test every run we install.",
+      "small-business-it-first-fix": "When everything feels broken, the fix is rarely everything. We start at the physical layer and work up \u2014 in that order.",
+      "future-proof-office-network": "The build that ages well is a boring one: fiber between closets, quality copper to every desk, and spare capacity everywhere. We plan it that way."
+    };
+
     var popup = document.getElementById("blog-popup");
     var popupImg = document.getElementById("blog-popup-img");
     var popupTag = document.getElementById("blog-popup-tag");
@@ -343,6 +357,7 @@
         note.textContent = "The full article on this topic is coming soon.";
         popupBody.appendChild(note);
         popupBody.appendChild(buildCta(
+          CTA_BY_SLUG[slug] ||
           "This is the work BTK Synergyworks does across Dallas\u2013Fort Worth. If this is the problem you are facing, tell us about your project and we will talk it through with you.",
           tagEl ? tagEl.textContent : "Network Infrastructure"));
       }
