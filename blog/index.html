@@ -245,6 +245,8 @@
         title: "Structured Cabling Is the Foundation Your Office Network Sits On",
         img: "/assets/hero-cabling.jpg",
         alt: "Technician installing structured cabling in a modern data room",
+        service: "Structured Cabling",
+        cta: "Structured cabling is what our field technicians install every day. If your office needs new runs, a cleanup, or an install that is tested and documented, we can help.",
         body: [
           "Every Wi-Fi call, video meeting, and card reader in an office rides on cable nobody sees. When that cabling is done right — proper runs, clean terminations, clear labels — the network disappears into the background and just works. When it is done wrong, every problem looks like a software problem until somebody opens the ceiling and finds a mess of unlabeled cable draped over a duct.",
           "The details that matter are unglamorous: cable category matched to the job, runs kept away from power lines and light fixtures, bend radius respected, and terminations tested rather than assumed. A cable that passes a cheap continuity check can still fail under real load — that is why every run we install gets tested and documented, so the next person on site is working from facts instead of guesses.",
@@ -256,6 +258,8 @@
         title: "Fiber Optic Installation: What DFW Businesses Should Know Before They Break Ground",
         img: "/assets/hero-fiber.jpg",
         alt: "Glowing fiber optic cables with blue light streaks",
+        service: "Fiber Optic Installation",
+        cta: "Fiber backbone work is what we do across Dallas\u2013Fort Worth. If you are planning a buildout or linking buildings, talk to us before you break ground.",
         body: [
           "Fiber is how a building\u2019s network stops being the bottleneck. A single fiber run can carry more traffic than a bundle of copper, over far longer distances, and it does not pick up interference from power lines or machinery. For offices linking floors, buildings on a campus, or a data room to the far end of a warehouse, fiber is the backbone everything else hangs on.",
           "What surprises most owners is how much of a fiber job is preparation, not glass. The route matters — conduit, pull points, bend radius, and where the fiber terminates. Single-mode versus multi-mode is a real choice with real cost consequences: multi-mode covers most in-building runs, single-mode is for distance and future capacity. Getting that call wrong means re-pulling, so it is worth deciding with someone who has pulled both.",
@@ -272,6 +276,41 @@
     var backBtn = document.getElementById("blog-back");
     var closeBtn = document.getElementById("blog-close");
     var lastFocused = null;
+
+    function buildCta(ctaText, serviceName) {
+      /* Closing block on EVERY article popup (standing rule): ties
+         the topic to the BTK service that does this work, links
+         back to the services section and the home page, and offers
+         the quote form. */
+      var box = document.createElement("div");
+      box.className = "blog-cta";
+      var p = document.createElement("p");
+      var strong = document.createElement("strong");
+      strong.textContent = "Need this done right? ";
+      p.appendChild(strong);
+      p.appendChild(document.createTextNode(ctaText));
+      box.appendChild(p);
+      var links = document.createElement("p");
+      links.className = "blog-cta-links";
+      var svc = document.createElement("a");
+      svc.href = "/#services";
+      svc.textContent = "See our " + serviceName + " service \u2192";
+      links.appendChild(svc);
+      links.appendChild(document.createTextNode("  \u00b7  "));
+      var home = document.createElement("a");
+      home.href = "/";
+      home.textContent = "Back to BTK home \u2192";
+      links.appendChild(home);
+      box.appendChild(links);
+      var quote = document.createElement("p");
+      var qlink = document.createElement("a");
+      qlink.className = "btn btn-primary";
+      qlink.href = "/#contact";
+      qlink.textContent = "Request a quote \u2197";
+      quote.appendChild(qlink);
+      box.appendChild(quote);
+      return box;
+    }
 
     function openArticle(slug, card) {
       var article = ARTICLES[slug];
@@ -292,6 +331,7 @@
           p.textContent = text;
           popupBody.appendChild(p);
         });
+        popupBody.appendChild(buildCta(article.cta, article.service));
       } else {
         if (introEl) {
           var intro = document.createElement("p");
@@ -300,15 +340,11 @@
         }
         var note = document.createElement("p");
         note.className = "blog-soon-note";
-        note.textContent = "The full article on this topic is coming soon. In the meantime, if this is the problem you are facing, tell us about your project and we will talk it through with you.";
+        note.textContent = "The full article on this topic is coming soon.";
         popupBody.appendChild(note);
-        var cta = document.createElement("p");
-        var link = document.createElement("a");
-        link.className = "btn btn-primary";
-        link.href = "/#contact";
-        link.textContent = "Discuss your project \u2197";
-        cta.appendChild(link);
-        popupBody.appendChild(cta);
+        popupBody.appendChild(buildCta(
+          "This is the work BTK Synergyworks does across Dallas\u2013Fort Worth. If this is the problem you are facing, tell us about your project and we will talk it through with you.",
+          tagEl ? tagEl.textContent : "Network Infrastructure"));
       }
       popup.hidden = false;
       document.body.classList.add("no-scroll");
